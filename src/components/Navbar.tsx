@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useChat } from '../context/ChatContext';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import logo1 from '/logo1.png?url';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -57,7 +56,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-8 h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 flex-shrink-0 cursor-pointer group">
-          <img src={logo1} alt="AFY Logo" className="h-13 w-auto" />
+          <img src="/logo1.png" alt="AFY Logo" className="h-13 w-auto" />
           <span className="text-2xl font-black font-display tracking-tighter text-text-primary">AI<span className="text-primary italic">FORYOU</span></span>
         </Link>
 
