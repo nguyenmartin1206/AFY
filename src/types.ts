@@ -1,25 +1,28 @@
-export interface Game {
+export interface AIProduct {
   id: string;
   name: string;
   slug: string;
   imageUrl: string;
-  category: string;
+  category: 'Personalized AI' | 'Enterprise AI';
+  rating: number;
 }
 
-export interface Offer {
+export interface StudyCase {
   id: string;
-  gameId: string;
   title: string;
-  price: number;
-  currency: string;
-  seller: {
-    name: string;
-    rating: number;
-    reviews: number;
-    isOnline: boolean;
-  };
-  type: string; // Flexible for AI categories
-  deliveryTime: string;
+  author: string;
+  imageUrl: string;
+  type: string;
+  description: string;
+}
+
+export interface NewsItem {
+  id: string;
+  title: string;
+  date: string;
+  category: string;
+  imageUrl: string;
+  excerpt: string;
 }
 
 export interface Category {

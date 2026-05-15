@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { Search, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Hero() {
   return (
@@ -33,9 +34,9 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-6">
-            <button className="btn-lime">
+            <Link to="/auth" className="btn-lime">
               Get Started
-            </button>
+            </Link>
           </div>
         </motion.div>
       </div>
