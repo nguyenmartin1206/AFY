@@ -1,12 +1,13 @@
 import { motion } from 'motion/react';
 import { Search, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import dashboardImg from '../assets/images/dashboad.png';
 
 export default function Hero() {
   return (
     <section 
       className="relative h-[500px] flex items-center overflow-hidden rounded-3xl border border-border-main bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/dashboad.png')" }}
+      style={{ backgroundImage: `url(${dashboardImg})` }}
     >
       {/* Dark overlay to ensure text readability */}
       

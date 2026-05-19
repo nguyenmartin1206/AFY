@@ -15,35 +15,40 @@ import BlogPage from './pages/BlogPage';
 import ForumPage from './pages/ForumPage';
 import LearningCenterPage from './pages/LearningCenterPage';
 import AuthPage from './pages/AuthPage';
+import AboutPage from './pages/AboutPage';
 import { ChatProvider } from './context/ChatContext';
+import { AuthProvider } from './context/AuthContext';
 import ChatBox from './components/ChatBox';
 
 export default function App() {
   return (
-    <ChatProvider>
-      <Router>
-        <div className="min-h-screen flex flex-col bg-bg-base">
-          <Navbar />
-          
-          <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 pt-32 pb-12 relative z-10">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/products" element={<ProductsPage />} />
-              <Route path="/personalized-ai" element={<PersonalizedAIPage />} />
-              <Route path="/enterprise-ai" element={<EnterpriseAIPage />} />
-              <Route path="/news" element={<NewsPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/forum" element={<ForumPage />} />
-              <Route path="/learning-center" element={<LearningCenterPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-            </Routes>
-          </main>
+    <AuthProvider>
+      <ChatProvider>
+        <Router>
+          <div className="min-h-screen flex flex-col bg-bg-base">
+            <Navbar />
+            
+            <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 pt-32 pb-12 relative z-10">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/personalized-ai" element={<PersonalizedAIPage />} />
+                <Route path="/enterprise-ai" element={<EnterpriseAIPage />} />
+                <Route path="/news" element={<NewsPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/forum" element={<ForumPage />} />
+                <Route path="/learning-center" element={<LearningCenterPage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/about" element={<AboutPage />} />
+              </Routes>
+            </main>
 
-          <Footer />
-          <ChatBox />
-        </div>
-      </Router>
-    </ChatProvider>
+            <Footer />
+            <ChatBox />
+          </div>
+        </Router>
+      </ChatProvider>
+    </AuthProvider>
   );
 }
 

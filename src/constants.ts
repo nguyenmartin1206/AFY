@@ -1,4 +1,5 @@
 import { AIProduct, StudyCase, NewsItem } from './types';
+import autoDsWalmartImg from './assets/images/Autodsquangcao.png';
 
 export const PRODUCTS: AIProduct[] = [
   {
@@ -6,7 +7,7 @@ export const PRODUCTS: AIProduct[] = [
     name: 'Auto Dropshipping Walmart',
     slug: 'autods-walmart',
     category: 'Personalized AI',
-    imageUrl: '/Autodsquangcao.png',
+    imageUrl: autoDsWalmartImg,
     rating: 5,
   },
   {

@@ -1,17 +1,38 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, ArrowRight, User, Building2, ChevronLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 type UserType = 'personal' | 'enterprise' | null;
 
 export default function AuthPage() {
   const [userType, setUserType] = useState<UserType>(null);
   const [step, setStep] = useState<'type' | 'auth'>('type');
+  const { signIn, signInGithub } = useAuth();
+  const navigate = useNavigate();
 
   const handleTypeSelect = (type: UserType) => {
     setUserType(type);
     setStep('auth');
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn();
+      navigate('/');
+    } catch (error) {
+      console.error('Sign in failed:', error);
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    try {
+      await signInGithub();
+      navigate('/');
+    } catch (error) {
+      console.error('GitHub sign in failed:', error);
+    }
   };
 
   const reset = () => {
@@ -85,10 +106,21 @@ export default function AuthPage() {
               <p className="text-text-secondary font-medium">Create your profile to continue</p>
             </div>
 
-            <div className="space-y-4">
-              <button className="w-full bg-white text-black p-4 rounded-xl font-bold flex items-center justify-center gap-3 border border-border-main hover:bg-zinc-50 transition-colors shadow-sm">
+            <div className="space-y-3">
+              <button 
+                onClick={handleGoogleSignIn}
+                className="w-full bg-white text-black p-4 rounded-xl font-bold flex items-center justify-center gap-3 border border-border-main hover:bg-zinc-50 transition-colors shadow-sm"
+              >
                 <img src="https://cdn.svgporn.com/logos/google-icon.svg" alt="Google" className="w-5 h-5" referrerPolicy="no-referrer" />
                 Continue with Google
+              </button>
+
+              <button 
+                onClick={handleGithubSignIn}
+                className="w-full bg-zinc-900 text-white p-4 rounded-xl font-bold flex items-center justify-center gap-3 border border-zinc-800 hover:bg-black transition-colors shadow-sm"
+              >
+                <img src="https://cdn.svgporn.com/logos/github-icon.svg" alt="GitHub" className="w-5 h-5 invert" referrerPolicy="no-referrer" />
+                Continue with GitHub
               </button>
 
               <div className="relative py-4">

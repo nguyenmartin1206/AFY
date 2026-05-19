@@ -1,4 +1,6 @@
 import { Facebook, Twitter, Instagram, Youtube, ShieldCheck, Mail, MapPin, Phone, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import logo from '../assets/images/logo1.png';
 
 export default function Footer() {
   return (
@@ -8,8 +10,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <img src="/logo1.png" alt="AFY Logo" className="h-13 w-auto" />
-              <span className="text-2xl font-black font-display tracking-tighter text-text-primary">AI<span className="text-primary italic">FORYOU</span></span>
+              <Link to="/" className="flex items-center gap-4">
+                <img src={logo} alt="AFY Logo" className="h-13 w-auto" />
+                <span className="text-2xl font-black font-display tracking-tighter text-text-primary">AI<span className="text-primary italic">FORYOU</span></span>
+              </Link>
             </div>
             <p className="text-text-secondary text-sm leading-relaxed max-w-xs font-medium">
               Elite AI solutions for researchers and enterprises. Powered by neural networks for total security and unmatched speed.
@@ -35,6 +39,9 @@ export default function Footer() {
               <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">API Integration</li>
               <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Neural Deployment</li>
               <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Ethical Auditing</li>
+              <li>
+                <Link to="/about" className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">About Us</Link>
+              </li>
             </ul>
           </div>
 
@@ -42,10 +49,10 @@ export default function Footer() {
           <div className="space-y-8">
             <h4 className="text-[11px] font-black text-primary uppercase tracking-[0.3em]">Research Hub</h4>
             <ul className="space-y-4 text-sm text-text-secondary">
-              <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Latest Studies</li>
-              <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Whitepapers</li>
-              <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Ethics Board</li>
-              <li className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Open Dataset</li>
+              <li><Link to="/news" className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Latest Studies</Link></li>
+              <li><Link to="/news" className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Whitepapers</Link></li>
+              <li><Link to="/forum" className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Ethics Board</Link></li>
+              <li><Link to="/learning-center" className="hover:text-accent cursor-pointer transition-all duration-300 font-bold">Open Dataset</Link></li>
             </ul>
           </div>
 

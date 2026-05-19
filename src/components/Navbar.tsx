@@ -4,11 +4,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { useChat } from '../context/ChatContext';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '../context/AuthContext';
+import logo from '../assets/images/logo1.png';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const { openChat } = useChat();
+  const { user, signOut } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -51,12 +54,26 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setIsProfileOpen(false);
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
+
+  const getInitials = (name: string | null) => {
+    if (!name) return '??';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-bg-base/90 backdrop-blur-md border-b border-border-main font-sans">
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-8 h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 flex-shrink-0 cursor-pointer group">
-          <img src="/logo1.png" alt="AFY Logo" className="h-13 w-auto" />
+          <img src={logo} alt="AFY Logo" className="h-13 w-auto" />
           <span className="text-2xl font-black font-display tracking-tighter text-text-primary">AI<span className="text-primary italic">FORYOU</span></span>
         </Link>
 
@@ -82,9 +99,11 @@ export default function Navbar() {
           </span>
           
           <div className="flex items-center gap-4">
-            <Link to="/auth" className="hidden sm:block btn-lime py-2 px-4 !text-[10px]">
-              GET STARTED
-            </Link>
+            {!user && (
+              <Link to="/auth" className="hidden sm:block btn-lime py-2 px-4 !text-[10px]">
+                GET STARTED
+              </Link>
+            )}
             
             <button 
               onClick={toggleTheme}
@@ -161,13 +180,17 @@ export default function Navbar() {
             <div className="relative" ref={profileRef}>
               <div 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 overflow-hidden ${
                   isProfileOpen 
                   ? 'bg-primary border-primary text-black' 
                   : 'bg-bg-surface border border-border-main text-text-primary hover:border-primary hover:text-primary'
                 }`}
               >
-                <User className="w-4 h-4" />
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt={user.displayName || 'Profile'} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-4 h-4" />
+                )}
               </div>
 
               <AnimatePresence>
@@ -181,58 +204,86 @@ export default function Navbar() {
                     {/* User Header */}
                     <div className="p-5 border-b border-border-main bg-bg-base/50">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-black font-black">
-                          JD
+                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-black font-black overflow-hidden">
+                          {user?.photoURL ? (
+                            <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            getInitials(user?.displayName || null)
+                          )}
                         </div>
-                        <div>
-                          <p className="text-sm font-black text-text-primary uppercase tracking-tight">John Doe</p>
-                          <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Pro Member</p>
+                        <div className="min-w-0">
+                          <p className="text-sm font-black text-text-primary uppercase tracking-tight truncate">
+                            {user?.displayName || 'Welcome'}
+                          </p>
+                          <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold truncate">
+                            {user ? user.email : 'Sign in to sync data'}
+                          </p>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-bg-base border border-border-main group cursor-pointer hover:border-primary/30 transition-all">
-                        <div className="flex items-center gap-2">
-                          <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Mana Balance</span>
+                      {user && (
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-bg-base border border-border-main group cursor-pointer hover:border-primary/30 transition-all">
+                          <div className="flex items-center gap-2">
+                            <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Mana Balance</span>
+                          </div>
+                          <span className="text-xs font-black text-primary">1,250</span>
                         </div>
-                        <span className="text-xs font-black text-primary">1,250</span>
-                      </div>
+                      )}
                     </div>
 
                     {/* Menu Items */}
                     <div className="p-2">
-                      <Link 
-                        to="/profile" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
-                      >
-                        <UserCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        <span className="text-xs font-bold">Account profile</span>
-                      </Link>
-                      <Link 
-                        to="/forum/posts" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
-                      >
-                        <MessageSquare className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        <span className="text-xs font-bold">Forum posts</span>
-                      </Link>
-                      <Link 
-                        to="/learning-center/progress" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
-                      >
-                        <GraduationCap className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        <span className="text-xs font-bold">Active lessons</span>
-                      </Link>
+                      {user ? (
+                        <>
+                          <Link 
+                            to="/profile" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
+                          >
+                            <UserCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            <span className="text-xs font-bold">Account profile</span>
+                          </Link>
+                          <Link 
+                            to="/forum/posts" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
+                          >
+                            <MessageSquare className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            <span className="text-xs font-bold">Forum posts</span>
+                          </Link>
+                          <Link 
+                            to="/learning-center/progress" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
+                          >
+                            <GraduationCap className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            <span className="text-xs font-bold">Active lessons</span>
+                          </Link>
+                        </>
+                      ) : (
+                        <Link 
+                          to="/auth" 
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-3 p-3 rounded-xl hover:bg-bg-base text-text-secondary hover:text-primary transition-all group"
+                        >
+                          <LogOut className="w-4 h-4 rotate-180 group-hover:scale-110 transition-transform" />
+                          <span className="text-xs font-bold">Sign in / Register</span>
+                        </Link>
+                      )}
                     </div>
 
                     {/* Footer */}
-                    <div className="p-2 border-t border-border-main bg-bg-base/30">
-                      <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all group">
-                        <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        <span className="text-xs font-bold">Sign out</span>
-                      </button>
-                    </div>
+                    {user && (
+                      <div className="p-2 border-t border-border-main bg-bg-base/30">
+                        <button 
+                          onClick={handleSignOut}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all group"
+                        >
+                          <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                          <span className="text-xs font-bold">Sign out</span>
+                        </button>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -251,12 +302,7 @@ export default function Navbar() {
           <Link to="/forum" className={`${location.pathname === '/forum' ? 'text-primary border-b border-primary' : 'text-text-secondary hover:text-primary'} h-full flex items-center cursor-pointer transition-all uppercase`}>FORUM</Link>
           <Link to="/blog" className={`${location.pathname === '/blog' ? 'text-primary border-b border-primary' : 'text-text-secondary hover:text-primary'} h-full flex items-center cursor-pointer transition-all uppercase`}>BLOG</Link>
           <Link to="/learning-center" className={`${location.pathname === '/learning-center' ? 'text-primary border-b border-primary' : 'text-text-secondary hover:text-primary'} h-full flex items-center cursor-pointer transition-all uppercase`}>LEARNING CENTER</Link>
-          <button 
-            onClick={openChat}
-            className="text-text-secondary hover:text-primary transition-all cursor-pointer flex items-center gap-1 h-full uppercase"
-          >
-            CONTACT US <ChevronDown className="w-3 h-3" />
-          </button>
+          <Link to="/about" className={`${location.pathname === '/about' ? 'text-primary border-b border-primary' : 'text-text-secondary hover:text-primary'} h-full flex items-center cursor-pointer transition-all uppercase`}>ABOUT US</Link>
           <div className="ml-auto opacity-30 text-[9px] text-text-secondary">PREMIUM MARKETPLACE</div>
         </div>
       </div>
